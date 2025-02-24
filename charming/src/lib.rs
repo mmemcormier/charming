@@ -93,6 +93,7 @@ pub mod theme;
 
 pub use renderer::*;
 
+use crate::series::Getters;
 use charming_macros::CharmingSetters;
 use component::{
     AngleAxis, Aria, Axis, Axis3D, Calendar, DataZoom, GeoMap, Grid, Grid3D, LegendConfig,
