@@ -131,6 +131,42 @@ impl_series_deserialize!(
     Treemap => "treemap",
 );
 
+pub trait Getters {
+    fn get_series_id(&self) -> Option<String>;
+}
+
+pub trait Setters {
+    fn show_symbols_mut(&mut self);
+    fn hide_symbols_mut(&mut self);
+}
+
+impl Getters for Series {
+    fn get_series_id(&self) -> Option<String> {
+        match self {
+            Series::Line(line) => line.get_id(),
+            // Series::Scatter(scatter) => scatter.get_id(),
+            _ => None,
+        }
+    }
+}
+
+impl Setters for Series {
+    fn show_symbols_mut(&mut self) {
+        match self {
+            Series::Line(line) => line.set_show_symbol(true),
+            Series::Scatter(_) => (),
+            _ => (),
+        }
+    }
+    fn hide_symbols_mut(&mut self) {
+        match self {
+            Series::Line(line) => line.set_show_symbol(false),
+            Series::Scatter(_) => (),
+            _ => (),
+        }
+    }
+}
+
 macro_rules! impl_series {
     ($($variant:ident),*) => {
         impl Serialize for Series {

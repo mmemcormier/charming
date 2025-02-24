@@ -300,6 +300,27 @@ impl Chart {
     }
 }
 
+impl Chart {
+    pub fn get_all_ids(&self) -> Vec<String> {
+        self.series
+            .iter()
+            .map(|s| s.get_series_id().unwrap())
+            .collect()
+    }
+
+    pub fn get_series_mut(&mut self, id: &String) -> Option<&mut Series> {
+        if let Some(index) = self
+            .series
+            .iter()
+            .position(|s| s.get_series_id() == Some(id.clone()))
+        {
+            Some(&mut self.series[index])
+        } else {
+            None
+        }
+    }
+}
+
 impl std::fmt::Display for Chart {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
