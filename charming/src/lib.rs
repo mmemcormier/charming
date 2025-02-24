@@ -92,6 +92,7 @@ pub mod theme;
 
 pub use renderer::*;
 
+use crate::series::Getters;
 use component::{
     AngleAxis, Aria, Axis, Axis3D, DataZoom, GeoMap, Grid, Grid3D, LegendConfig, ParallelAxis,
     ParallelCoordinate, PolarCoordinate, RadarCoordinate, RadiusAxis, SaveAsImageType, SingleAxis,
