@@ -264,3 +264,13 @@ impl Line {
         self
     }
 }
+
+impl Line {
+    pub fn get_id(&self) -> Option<String> {
+        self.id.clone()
+    }
+
+    pub fn set_show_symbol(&mut self, show_symbol: bool) {
+        self.show_symbol = Some(show_symbol)
+    }
+}
