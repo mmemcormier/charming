@@ -33,7 +33,7 @@ impl ColorStop {
     }
 }
 
-#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum Color {
     Value(String),
     LinearGradient {
@@ -49,6 +49,39 @@ pub enum Color {
         r: f64,
         color_stops: Vec<ColorStop>,
     },
+}
+
+impl<'de> Deserialize<'de> for Color {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct ColorVisitor;
+
+        impl<'de> serde::de::Visitor<'de> for ColorVisitor {
+            type Value = Color;
+
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("a string or LinearGradient type or RadialGradient type.")
+            }
+
+            fn visit_string<E>(self, v: String) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Color::Value(v))
+            }
+
+            fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+            where
+                E: serde::de::Error,
+            {
+                Ok(Color::Value(v.into()))
+            }
+        }
+
+        deserializer.deserialize_any(ColorVisitor)
+    }
 }
 
 impl Serialize for Color {

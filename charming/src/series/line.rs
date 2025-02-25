@@ -270,7 +270,38 @@ impl Line {
         self.id.clone()
     }
 
+    pub fn get_name(&self) -> Option<String> {
+        self.name.clone()
+    }
+    pub fn set_name<S: Into<String>>(&mut self, name: S) {
+        self.name = Some(name.into())
+    }
+
+    pub fn get_show_symbol(&self) -> Option<bool> {
+        self.show_symbol.clone()
+    }
     pub fn set_show_symbol(&mut self, show_symbol: bool) {
         self.show_symbol = Some(show_symbol)
+    }
+
+    pub fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S) {
+        self.smooth = Some(smoothness.into())
+    }
+    pub fn get_smoothness(&self) -> Option<Smoothness> {
+        self.smooth.clone()
+    }
+
+    pub fn get_linestyle(&self) -> Option<LineStyle> {
+        self.line_style.clone()
+    }
+    pub fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L) {
+        self.line_style = Some(line_style.into())
+    }
+
+    pub fn get_data(&self) -> &Vec<DataPoint> {
+        &self.data
+    }
+    pub fn set_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>) {
+        self.data = new_data.into_iter().map(|d| d.into()).collect()
     }
 }

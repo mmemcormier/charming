@@ -253,6 +253,9 @@ pub struct Chart {
     #[serde(skip_serializing_if = "Option::is_none")]
     toolbox: Option<Toolbox>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
+    animation: Option<bool>,
+
     #[serde(skip_serializing_if = "Vec::is_empty")]
     grid: Vec<Grid>,
 
@@ -345,6 +348,7 @@ impl Chart {
             toolbox: None,
             legend: None,
             tooltip: None,
+            animation: None,
             grid: vec![],
             grid3d: vec![],
             x_axis: vec![],
@@ -389,6 +393,11 @@ impl Chart {
 
     pub fn toolbox(mut self, toolbox: Toolbox) -> Self {
         self.toolbox = Some(toolbox);
+        self
+    }
+
+    pub fn animation(mut self, animation: bool) -> Self {
+        self.animation = Some(animation);
         self
     }
 
@@ -520,6 +529,14 @@ impl Chart {
 }
 
 impl Chart {
+    pub fn get_color_ref(&self) -> &Vec<Color> {
+        &self.color
+    }
+
+    pub fn get_color_mut(&mut self) -> &mut Vec<Color> {
+        &mut self.color
+    }
+
     pub fn get_all_ids(&self) -> Vec<String> {
         self.series
             .iter()
@@ -537,6 +554,14 @@ impl Chart {
         } else {
             None
         }
+    }
+
+    pub fn get_all_series_ref(&self) -> &Vec<Series> {
+        &self.series
+    }
+
+    pub fn add_series<S: Into<Series>>(&mut self, series: S) {
+        self.series.push(series.into());
     }
 }
 

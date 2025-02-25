@@ -1,5 +1,6 @@
 #![allow(clippy::large_enum_variant)]
 
+use crate::element::{smoothness::Smoothness, LineStyle};
 use serde::Serialize;
 
 pub mod bar;
@@ -50,6 +51,8 @@ pub use theme_river::*;
 pub use tree::*;
 pub use treemap::*;
 
+use crate::datatype::DataPoint;
+
 #[derive(Debug, PartialEq, Clone)]
 pub enum Series {
     Bar(bar::Bar),
@@ -76,13 +79,22 @@ pub enum Series {
     Treemap(treemap::Treemap),
 }
 
+// Think about how to get a mutable ref to the enum variants instead of
+// implementing wrapper methods.
 pub trait Getters {
     fn get_series_id(&self) -> Option<String>;
+    fn get_series_name(&self) -> Option<String>;
+    fn get_show_symbol(&self) -> Option<bool>;
+    fn get_series_smoothness(&self) -> Option<Smoothness>;
+    fn get_series_linestyle(&self) -> Option<LineStyle>;
+    fn get_series_data(&self) -> Option<&Vec<DataPoint>>;
 }
 
 pub trait Setters {
-    fn show_symbols_mut(&mut self);
-    fn hide_symbols_mut(&mut self);
+    fn set_show_symbol(&mut self, show_symbol: bool);
+    fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S);
+    fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L);
+    fn set_series_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>);
 }
 
 impl Getters for Series {
@@ -93,20 +105,65 @@ impl Getters for Series {
             _ => None,
         }
     }
+
+    fn get_series_name(&self) -> Option<String> {
+        match self {
+            Series::Line(line) => line.get_name(),
+            _ => None,
+        }
+    }
+
+    fn get_show_symbol(&self) -> Option<bool> {
+        match self {
+            Series::Line(line) => line.get_show_symbol(),
+            _ => None,
+        }
+    }
+
+    fn get_series_smoothness(&self) -> Option<Smoothness> {
+        match self {
+            Series::Line(line) => line.get_smoothness(),
+            _ => None,
+        }
+    }
+
+    fn get_series_linestyle(&self) -> Option<LineStyle> {
+        match self {
+            Series::Line(line) => line.get_linestyle(),
+            _ => None,
+        }
+    }
+
+    fn get_series_data(&self) -> Option<&Vec<DataPoint>> {
+        match self {
+            Series::Line(line) => Some(line.get_data()),
+            _ => None,
+        }
+    }
 }
 
 impl Setters for Series {
-    fn show_symbols_mut(&mut self) {
+    fn set_series_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>) {
         match self {
-            Series::Line(line) => line.set_show_symbol(true),
-            Series::Scatter(_) => (),
+            Series::Line(line) => line.set_data(new_data),
             _ => (),
         }
     }
-    fn hide_symbols_mut(&mut self) {
+    fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S) {
         match self {
-            Series::Line(line) => line.set_show_symbol(false),
-            Series::Scatter(_) => (),
+            Series::Line(line) => line.set_smoothness(smoothness),
+            _ => (),
+        }
+    }
+    fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L) {
+        match self {
+            Series::Line(line) => line.set_linestyle(line_style),
+            _ => (),
+        }
+    }
+    fn set_show_symbol(&mut self, show_symbol: bool) {
+        match self {
+            Series::Line(line) => line.set_show_symbol(show_symbol),
             _ => (),
         }
     }
