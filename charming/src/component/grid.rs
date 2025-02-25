@@ -7,6 +7,7 @@ use crate::{
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct GridTooltip {
     /// Whether to show the tooltip component.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -135,6 +136,7 @@ impl GridTooltip {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Grid {
     /// Component ID.
     #[serde(skip_serializing_if = "Option::is_none")]

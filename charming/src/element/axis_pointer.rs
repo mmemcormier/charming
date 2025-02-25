@@ -25,6 +25,7 @@ pub enum AxisPointerAxis {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointerLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     x_axis_index: Option<CompositeValue>,
@@ -80,6 +81,7 @@ impl AxisPointerLink {
 /// mouse pointer.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointer {
     /// Component ID.
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -4,6 +4,7 @@ use crate::element::{AxisType, NameLocation};
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ParallelAxis {
     #[serde(skip_serializing_if = "Option::is_none")]
     dim: Option<f64>,

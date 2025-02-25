@@ -12,6 +12,7 @@ pub enum SaveAsImageType {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct SaveAsImage {
     #[serde(skip_serializing_if = "Option::is_none")]
     show: Option<bool>,
@@ -66,6 +67,7 @@ impl SaveAsImage {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Restore {
     #[serde(skip_serializing_if = "Option::is_none")]
     show: Option<bool>,
@@ -101,6 +103,7 @@ impl Restore {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DataView {
     #[serde(skip_serializing_if = "Option::is_none")]
     show: Option<bool>,
@@ -167,6 +170,7 @@ impl From<&str> for MagicTypeType {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct MagicType {
     #[serde(skip_serializing_if = "Option::is_none")]
     type_: Option<Vec<MagicTypeType>>,
@@ -213,6 +217,7 @@ pub enum BrushType {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Brush {
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -238,6 +243,7 @@ impl Brush {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ToolboxDataZoom {
     #[serde(skip_serializing_if = "Option::is_none")]
     y_axis_index: Option<CompositeValue>,
@@ -262,6 +268,7 @@ impl ToolboxDataZoom {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Feature {
     #[serde(skip_serializing_if = "Option::is_none")]
     save_as_image: Option<SaveAsImage>,
@@ -333,6 +340,7 @@ impl Feature {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Toolbox {
     #[serde(skip_serializing_if = "Option::is_none")]
     show: Option<bool>,

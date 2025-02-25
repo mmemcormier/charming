@@ -173,3 +173,31 @@ impl Scatter {
         self
     }
 }
+
+pub struct ScatterController<'a> {
+    scatter: &'a mut Scatter,
+}
+
+// Scatter-specific mutations
+// pub struct ScatterMutator<'a>(&'a mut Scatter);
+
+// impl<'a> SeriesVariantMutator for ScatterMutator<'a> {
+//     fn set_name<S: Into<String>>(&mut self, name: S) {
+//         self.0.name = Some(name.into());
+//     }
+// }
+
+impl<'a> ScatterController<'a> {
+    pub fn new(scatter: &'a mut Scatter) -> Self {
+        ScatterController { scatter }
+    }
+    // Scatter-specific methods
+    pub fn with_marker_size<S: Into<SymbolSize>>(&mut self, size: S) -> &mut Self {
+        self.scatter.symbol_size = Some(size.into());
+        self
+    }
+    fn with_name<S: Into<String>>(&mut self, name: S) -> &mut Self {
+        self.scatter.name = Some(name.into());
+        self
+    }
+}

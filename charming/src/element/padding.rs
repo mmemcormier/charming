@@ -5,7 +5,7 @@ use serde::{
 };
 
 /// Padding space around content.
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub enum Padding {
     /// Set padding of all sides.
     Single(f64),

@@ -27,6 +27,7 @@ pub enum DataZoomType {
 /// of outlier points.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DataZoom {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]

@@ -5,6 +5,7 @@ use crate::element::{AxisLabel, AxisLine, AxisType, BoundaryGap, NameLocation, T
 /// Radius axis in polar coordinate.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct RadiusAxis {
     #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,

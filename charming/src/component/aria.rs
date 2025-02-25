@@ -10,6 +10,7 @@ A single decal pattern.
  */
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DecalItem {
     /// The symbol type of the decal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -134,6 +135,7 @@ Decal patterns to be applied to series data.
  */
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Decal {
     /// Whether to show decal patterns. If `decals` is not set, this option is
     /// used to enable the default decal pattern.
@@ -205,6 +207,7 @@ Chart::new()
  */
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Aria {
     /// Whether to enable WAI-ARIA.
     #[serde(skip_serializing_if = "Option::is_none")]

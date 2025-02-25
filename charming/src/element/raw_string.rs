@@ -2,7 +2,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 
 pub static RAW_MARK: &str = "#*#*#*#";
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub struct RawString(String);
 
 impl Serialize for RawString {

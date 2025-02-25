@@ -1,7 +1,8 @@
 use super::RawString;
 use serde::{de::Visitor, Deserialize, Deserializer, Serialize};
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[serde(rename_all(deserialize = "snake_case"))]
 pub enum Symbol {
     Circle,
     Rect,

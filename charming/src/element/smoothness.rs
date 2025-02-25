@@ -3,6 +3,7 @@ use serde::{Deserialize, Deserializer, Serialize};
 use std::fmt;
 
 #[derive(Debug, PartialEq, PartialOrd, Clone, Copy)]
+// #[serde(tag = "type", content = "value")]
 pub enum Smoothness {
     Single(f64),
     Boolean(bool),

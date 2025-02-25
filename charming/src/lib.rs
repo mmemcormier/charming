@@ -103,7 +103,7 @@ use datatype::Dataset;
 use element::{process_raw_strings, AnimationTime, AxisPointer, Color, Easing, MarkLine, Tooltip};
 use serde::{Deserialize, Serialize};
 use serde_with::{formats::PreferOne, serde_as, OneOrMany};
-use series::Series;
+use series::{Series, SeriesController};
 /**
 The chart representation.
 
@@ -241,6 +241,7 @@ zoom, restore, and reset.
 #[serde_as]
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Chart {
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -279,7 +280,6 @@ pub struct Chart {
     #[serde(skip_serializing_if = "Option::is_none")]
     toolbox: Option<Toolbox>,
 
-    #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
     grid: Vec<Grid>,
 
@@ -353,6 +353,7 @@ pub struct Chart {
 
     #[serde(default)]
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    // #[serde(default)]
     radar: Vec<RadarCoordinate>,
 
     #[serde(default)]
@@ -398,6 +399,7 @@ impl Chart {
             toolbox: None,
             legend: None,
             tooltip: None,
+            animation: None,
             grid: vec![],
             grid3d: vec![],
             x_axis: vec![],
@@ -482,6 +484,11 @@ impl Chart {
 
     pub fn toolbox(mut self, toolbox: Toolbox) -> Self {
         self.toolbox = Some(toolbox);
+        self
+    }
+
+    pub fn animation(mut self, animation: bool) -> Self {
+        self.animation = Some(animation);
         self
     }
 
@@ -613,6 +620,14 @@ impl Chart {
 }
 
 impl Chart {
+    pub fn get_color_ref(&self) -> &Vec<Color> {
+        &self.color
+    }
+
+    pub fn get_color_mut(&mut self) -> &mut Vec<Color> {
+        &mut self.color
+    }
+
     pub fn get_all_ids(&self) -> Vec<String> {
         self.series
             .iter()
@@ -620,6 +635,9 @@ impl Chart {
             .collect()
     }
 
+    // !!! Could this just match on series and return the underlying series type?
+    // getters and setters would only need to be implemented on the underlying type
+    // and the need for wrapper methods would be avoided.
     pub fn get_series_mut(&mut self, id: &String) -> Option<&mut Series> {
         if let Some(index) = self
             .series
@@ -630,6 +648,72 @@ impl Chart {
         } else {
             None
         }
+    }
+
+    pub fn get_all_series_ref(&self) -> &Vec<Series> {
+        &self.series
+    }
+
+    pub fn get_all_series_mut(&mut self) -> &mut Vec<Series> {
+        &mut self.series
+    }
+
+    pub fn reset_x_axis(&mut self) {
+        self.x_axis = vec![]
+    }
+
+    pub fn reset_y_axis(&mut self) {
+        self.y_axis = vec![]
+    }
+}
+
+impl Chart {
+    pub fn with_mutable<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(&mut ChartController),
+    {
+        let mut controller = ChartController { chart: self };
+        f(&mut controller);
+        self
+    }
+}
+
+pub struct ChartController<'a> {
+    chart: &'a mut Chart,
+}
+
+impl<'a> ChartController<'a> {
+    pub fn reset_x_axis(&mut self) -> &mut Self {
+        self.chart.x_axis = vec![];
+        self
+    }
+    pub fn with_x_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.x_axis.push(axis);
+        self
+    }
+    pub fn reset_y_axis(&mut self) -> &mut Self {
+        self.chart.y_axis = vec![];
+        self
+    }
+    pub fn with_y_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.y_axis.push(axis);
+        self
+    }
+    pub fn reset_series(&mut self) -> &mut Self {
+        self.chart.series = vec![];
+        self
+    }
+    pub fn with_series<S: Into<Series>>(&mut self, series: S) -> &mut Self {
+        self.chart.series.push(series.into());
+        self
+    }
+    pub fn series_mut_by_index(&mut self, index: usize) -> SeriesController<'_> {
+        let series = self
+            .chart
+            .series
+            .get_mut(index)
+            .expect("Index out of bounds for series vector.");
+        SeriesController::new(series)
     }
 }
 
@@ -661,4 +745,46 @@ impl std::fmt::Display for EchartsError {
             Self::WasmError(msg) => write!(f, "WebAssembly runtime error: {msg}"),
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    // use claims::{assert_ok, assert_ok_eq};
+    use component::Legend;
+    use series::line::Line;
+    // use serde_assert::{Deserializer, Serializer, Token};
+
+    #[test]
+    fn test_chart_round_trip() {
+        // let chart = Chart::new().legend(Legend::new().show(true));
+        let chart = Chart::new()
+            .legend(Legend::new().show(true))
+            .series(Series::Line(Line::new().data(vec![vec![0, 1], vec![2, 3]])));
+        println!("Chart:\n {}", chart);
+        let chart_json = serde_json::to_string(&chart).unwrap();
+        println!("{}", chart_json);
+        let chart_de = serde_json::from_str(&chart_json).unwrap();
+        assert_eq!(chart, chart_de);
+    }
+    // #[test]
+    // fn test_chart_serialization() {
+    //     let value = Chart::new().legend(Legend::new().show(true));
+    //     let serializer = Serializer::builder().build();
+    //     let tokens = assert_ok!(value.serialize(&serializer));
+    //     assert_eq!(
+    //         tokens,
+    //         [
+    //             Token::Struct {
+    //                 name: "Chart",
+    //                 len: 1
+    //             },
+    //             Token::Struct {
+    //                 name: "Legend",
+    //                 len: 1
+    //             },
+    //             Token::StructEnd,
+    //         ]
+    //     );
+    // }
 }

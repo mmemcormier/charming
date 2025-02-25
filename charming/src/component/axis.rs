@@ -11,6 +11,7 @@ use crate::{
 /// Axis in cartesian coordinate.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Axis {
     /// Type of axis.
     #[serde(skip_serializing_if = "Option::is_none")]

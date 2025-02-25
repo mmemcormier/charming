@@ -8,6 +8,7 @@ use crate::{
 /// Title component, including main title and subtitle.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Title {
     /// Component ID.
     #[serde(skip_serializing_if = "Option::is_none")]

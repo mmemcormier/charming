@@ -2,7 +2,7 @@ use serde::{de::Visitor, ser::SerializeSeq, Deserialize, Deserializer, Serialize
 
 use super::color::Color;
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub struct ColorSegment(f64, Color);
 
 impl Serialize for ColorSegment {
