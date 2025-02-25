@@ -18,6 +18,7 @@ pub enum VisualMapType {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct VisualMapPiece {
     min: Option<f64>,
     max: Option<f64>,
@@ -59,6 +60,7 @@ impl From<(i64, i64, &str)> for VisualMapPiece {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct VisualMapChannel {
     #[charming_set_vec]
     color: Vec<Color>,
@@ -70,6 +72,7 @@ pub struct VisualMapChannel {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct VisualMap {
     #[serde(rename = "type")]
     type_: Option<VisualMapType>,

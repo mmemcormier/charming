@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Axis {
     /// Type of axis.
     #[serde(rename = "type")]

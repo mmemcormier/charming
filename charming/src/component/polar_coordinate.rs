@@ -9,6 +9,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct PolarCoordinate {
     id: Option<String>,
     /// The `zlevel` value of all graphical elements in.

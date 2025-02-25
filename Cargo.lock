@@ -465,6 +465,7 @@ dependencies = [
  "serde_v8",
  "serde_with",
  "test_each_file",
+ "thiserror 2.0.12",
  "wasm-bindgen",
  "web-sys",
 ]

@@ -1,6 +1,8 @@
 #![allow(clippy::large_enum_variant)]
 
-use serde::Serialize;
+use crate::element::{smoothness::Smoothness, LineStyle, Symbol};
+use serde::{Deserialize, Serialize};
+use thiserror;
 
 pub mod bar;
 pub mod bar3d;
@@ -49,6 +51,8 @@ pub use sunburst::*;
 pub use theme_river::*;
 pub use tree::*;
 pub use treemap::*;
+
+use crate::datatype::DataPoint;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Series {
@@ -131,13 +135,86 @@ impl_series_deserialize!(
     Treemap => "treemap",
 );
 
+impl Series {
+    pub fn with_mutable<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(&mut SeriesController),
+    {
+        let mut controller = SeriesController { series: self };
+        f(&mut controller);
+        self
+    }
+}
+
+pub struct SeriesController<'a> {
+    series: &'a mut Series,
+}
+
+impl<'a> SeriesController<'a> {
+    pub fn new(series: &'a mut Series) -> Self {
+        SeriesController { series }
+    }
+    /// Type-safe access to Line variant
+    pub fn as_line_mut(&mut self) -> Result<line::LineController<'_>, SeriesTypeError> {
+        match self.series {
+            Series::Line(ref mut line) => Ok(line::LineController::new(line)),
+            _ => Err(SeriesTypeError::ExpectedLine),
+        }
+    }
+
+    /// Type-safe access to Scatter variant
+    pub fn as_scatter_mut(&mut self) -> Result<scatter::ScatterController<'_>, SeriesTypeError> {
+        match self.series {
+            Series::Scatter(ref mut scatter) => Ok(scatter::ScatterController::new(scatter)),
+            _ => Err(SeriesTypeError::ExpectedScatter),
+        }
+    }
+
+    //     /// Closure-based modification with automatic variant matching
+    //     pub fn with_series<f, r>(&mut self, f: f) -> r
+    //     where
+    //         f: fnonce(&mut seriescontroller) -> r,
+    //     {
+    //         match self.series {
+    //             series::line(ref mut line) => f(&mut linecontroller { line }),
+    //             Series::Scatter(ref mut scatter) => f(&mut ScatterController { scatter }),
+    //             _ => (),
+    //         }
+    //     }
+}
+
+// Trait for common operations
+// trait SeriesVariantMutator {
+//     fn set_name<S: Into<String>>(&mut self, name: S);
+//     // Add common operations here
+// }
+
+#[derive(Debug, thiserror::Error)]
+pub enum SeriesTypeError {
+    #[error("Expected Line series variant")]
+    ExpectedLine,
+    #[error("Expected Scatter series variant")]
+    ExpectedScatter,
+}
+
+// Think about how to get a mutable ref to the enum variants instead of
+// implementing wrapper methods.
 pub trait Getters {
     fn get_series_id(&self) -> Option<String>;
+    fn get_series_name(&self) -> Option<String>;
+    fn get_show_symbol(&self) -> Option<bool>;
+    fn get_series_smoothness(&self) -> Option<Smoothness>;
+    fn get_series_symbol(&self) -> &Option<Symbol>;
+    fn get_series_linestyle(&self) -> Option<LineStyle>;
+    fn get_series_data(&self) -> Option<&Vec<DataPoint>>;
 }
 
 pub trait Setters {
-    fn show_symbols_mut(&mut self);
-    fn hide_symbols_mut(&mut self);
+    fn set_show_symbol(&mut self, show_symbol: bool);
+    fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S);
+    fn set_symbol<S: Into<Symbol>>(&mut self, symbol: S);
+    fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L);
+    fn set_series_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>);
 }
 
 impl Getters for Series {
@@ -148,22 +225,104 @@ impl Getters for Series {
             _ => None,
         }
     }
+
+    fn get_series_name(&self) -> Option<String> {
+        match self {
+            Series::Line(line) => line.get_name(),
+            _ => None,
+        }
+    }
+
+    fn get_show_symbol(&self) -> Option<bool> {
+        match self {
+            Series::Line(line) => line.get_show_symbol(),
+            _ => None,
+        }
+    }
+
+    fn get_series_smoothness(&self) -> Option<Smoothness> {
+        match self {
+            Series::Line(line) => line.get_smoothness(),
+            _ => None,
+        }
+    }
+
+    fn get_series_symbol(&self) -> &Option<Symbol> {
+        match self {
+            Series::Line(line) => line.get_symbol(),
+            _ => &None,
+        }
+    }
+
+    fn get_series_linestyle(&self) -> Option<LineStyle> {
+        match self {
+            Series::Line(line) => line.get_linestyle(),
+            _ => None,
+        }
+    }
+
+    fn get_series_data(&self) -> Option<&Vec<DataPoint>> {
+        match self {
+            Series::Line(line) => Some(line.get_data()),
+            _ => None,
+        }
+    }
 }
 
 impl Setters for Series {
-    fn show_symbols_mut(&mut self) {
+    fn set_series_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>) {
         match self {
-            Series::Line(line) => line.set_show_symbol(true),
-            Series::Scatter(_) => (),
+            Series::Line(line) => line.set_data(new_data),
             _ => (),
         }
     }
-    fn hide_symbols_mut(&mut self) {
+    fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S) {
         match self {
-            Series::Line(line) => line.set_show_symbol(false),
-            Series::Scatter(_) => (),
+            Series::Line(line) => line.set_smoothness(smoothness),
             _ => (),
         }
+    }
+    fn set_symbol<S: Into<Symbol>>(&mut self, symbol: S) {
+        match self {
+            Series::Line(line) => line.set_symbol(symbol),
+            _ => (),
+        }
+    }
+    fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L) {
+        match self {
+            Series::Line(line) => line.set_linestyle(line_style),
+            _ => (),
+        }
+    }
+    fn set_show_symbol(&mut self, show_symbol: bool) {
+        match self {
+            Series::Line(line) => line.set_show_symbol(show_symbol),
+            _ => (),
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for Series {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        // Deserialize into a struct that contains the "type" field
+        let value = serde_json::Value::deserialize(deserializer)?;
+
+        let result = match value.get("type").and_then(serde_json::Value::as_str) {
+            Some(type_) => match type_ {
+                "bar" => serde_json::from_value(value).map(Series::Bar),
+                "line" => serde_json::from_value(value).map(Series::Line),
+                // TODO: add remaining series types.
+                unknown => Err(serde::de::Error::custom(format!(
+                    "unknown series type: {}",
+                    unknown
+                ))),
+            },
+            None => Err(serde::de::Error::custom("missing series type")),
+        };
+        Ok(result.map_err(serde::de::Error::custom)?)
     }
 }
 
@@ -213,3 +372,22 @@ impl_series!(
     Tree,
     Treemap
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn round_trip_series_line() {
+        let data = vec![vec![0, 1], vec![2, 3]];
+        let line = line::Line::new()
+            .name("test_line")
+            .show_symbol(false)
+            .connect_nulls(true)
+            .data(data);
+        let line_json = serde_json::to_string(&line).unwrap();
+        println!("{}", line_json);
+        let line_de = serde_json::from_str(&line_json).unwrap();
+        assert_eq!(line, line_de);
+    }
+}

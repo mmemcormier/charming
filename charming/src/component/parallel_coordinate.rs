@@ -14,6 +14,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ParallelAxisDefault {
     #[serde(rename = "type")]
     type_: Option<AxisType>,
@@ -48,6 +49,7 @@ pub struct ParallelAxisDefault {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ParallelCoordinate {
     id: Option<String>,
     zlevel: Option<f64>,

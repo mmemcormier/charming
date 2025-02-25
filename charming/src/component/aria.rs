@@ -14,6 +14,7 @@ A single decal pattern.
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DecalItem {
     /// The symbol type of the decal.
     symbol: Option<Symbol>,

@@ -95,6 +95,7 @@ impl From<(String, String)> for LegendItem {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Legend {
     /// Type of legend.
     #[serde(rename = "type")]

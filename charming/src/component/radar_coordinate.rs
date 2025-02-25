@@ -15,6 +15,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct RadarAxisName {
     /// Whether to display the indicator's name.
     show: Option<bool>,
@@ -56,6 +57,7 @@ pub struct RadarAxisName {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct RadarIndicator {
     name: Option<String>,
     max: Option<f64>,
@@ -91,6 +93,7 @@ impl From<(&str, i64, i64)> for RadarIndicator {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct RadarCoordinate {
     id: Option<String>,
     /// The `zlevel` value of all graphical elements in.

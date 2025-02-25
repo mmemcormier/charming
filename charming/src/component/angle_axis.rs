@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AngleAxis {
     boundary_gap: Option<BoundaryGap>,
     /// Component ID.

@@ -104,7 +104,7 @@ use datatype::Dataset;
 use element::{process_raw_strings, AnimationTime, AxisPointer, Color, Easing, MarkLine, Tooltip};
 use serde::{Deserialize, Serialize};
 use serde_with::{formats::PreferOne, serde_as, OneOrMany};
-use series::Series;
+use series::{Series, SeriesController};
 /**
 The chart representation.
 
@@ -246,6 +246,7 @@ zoom, restore, and reset.
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Chart {
     title: Vec<Title>,
     animation: Option<bool>,
@@ -294,6 +295,227 @@ pub struct Chart {
     geo_map: Vec<GeoMap>,
 }
 impl Chart {
+    pub fn new() -> Self {
+        Self {
+            title: vec![],
+            animation: None,
+            animation_threshold: None,
+            animation_duration: None,
+            animation_easing: None,
+            animation_delay: None,
+            animation_duration_update: None,
+            animation_easing_update: None,
+            animation_delay_update: None,
+            toolbox: None,
+            legend: None,
+            tooltip: None,
+            grid: vec![],
+            grid3d: vec![],
+            x_axis: vec![],
+            x_axis3d: vec![],
+            y_axis: vec![],
+            y_axis3d: vec![],
+            z_axis3d: vec![],
+            polar: vec![],
+            angle_axis: vec![],
+            radius_axis: vec![],
+            single_axis: None,
+            parallel_axis: vec![],
+            axis_pointer: vec![],
+            visual_map: vec![],
+            data_zoom: vec![],
+            parallel: None,
+            dataset: None,
+            radar: vec![],
+            color: vec![],
+            background_color: None,
+            mark_line: None,
+            aria: None,
+            series: vec![],
+            geo_maps: vec![],
+        }
+    }
+
+    pub fn title(mut self, title: Title) -> Self {
+        self.title.push(title);
+        self
+    }
+
+    pub fn animation(mut self, animation: bool) -> Self {
+        self.animation = Some(animation);
+        self
+    }
+
+    pub fn animation_threshold<F: Into<f64>>(mut self, animation_threshold: F) -> Self {
+        self.animation_threshold = Some(animation_threshold.into());
+        self
+    }
+
+    pub fn animation_duration<A: Into<AnimationTime>>(mut self, animation_time: A) -> Self {
+        self.animation_duration = Some(animation_time.into());
+        self
+    }
+
+    pub fn animation_easing(mut self, easing: Easing) -> Self {
+        self.animation_easing = Some(easing);
+        self
+    }
+
+    pub fn animation_delay<A: Into<AnimationTime>>(mut self, animation_time: A) -> Self {
+        self.animation_delay = Some(animation_time.into());
+        self
+    }
+
+    pub fn animation_duration_update<A: Into<AnimationTime>>(mut self, animation_time: A) -> Self {
+        self.animation_duration_update = Some(animation_time.into());
+        self
+    }
+
+    pub fn animation_easing_update(mut self, easing: Easing) -> Self {
+        self.animation_easing_update = Some(easing);
+        self
+    }
+
+    pub fn animation_delay_update<A: Into<AnimationTime>>(mut self, animation_time: A) -> Self {
+        self.animation_delay_update = Some(animation_time.into());
+        self
+    }
+
+    pub fn tooltip(mut self, tooltip: Tooltip) -> Self {
+        self.tooltip = Some(tooltip);
+        self
+    }
+
+    pub fn legend<L: Into<LegendConfig>>(mut self, legend: L) -> Self {
+        self.legend = Some(legend.into());
+        self
+    }
+
+    pub fn toolbox(mut self, toolbox: Toolbox) -> Self {
+        self.toolbox = Some(toolbox);
+        self
+    }
+
+    pub fn grid(mut self, grid: Grid) -> Self {
+        self.grid.push(grid);
+        self
+    }
+
+    pub fn grid3d(mut self, grid: Grid3D) -> Self {
+        self.grid3d.push(grid);
+        self
+    }
+
+    pub fn x_axis(mut self, x_axis: Axis) -> Self {
+        self.x_axis.push(x_axis);
+        self
+    }
+
+    pub fn x_axis3d(mut self, x_axis: Axis3D) -> Self {
+        self.x_axis3d.push(x_axis);
+        self
+    }
+
+    pub fn y_axis(mut self, y_axis: Axis) -> Self {
+        self.y_axis.push(y_axis);
+        self
+    }
+
+    pub fn y_axis3d(mut self, y_axis: Axis3D) -> Self {
+        self.y_axis3d.push(y_axis);
+        self
+    }
+
+    pub fn z_axis3d(mut self, z_axis: Axis3D) -> Self {
+        self.z_axis3d.push(z_axis);
+        self
+    }
+
+    pub fn polar(mut self, polar: PolarCoordinate) -> Self {
+        self.polar.push(polar);
+        self
+    }
+
+    pub fn angle_axis(mut self, angle_axis: AngleAxis) -> Self {
+        self.angle_axis.push(angle_axis);
+        self
+    }
+
+    pub fn radius_axis(mut self, radius_axis: RadiusAxis) -> Self {
+        self.radius_axis.push(radius_axis);
+        self
+    }
+
+    pub fn single_axis(mut self, single_axis: SingleAxis) -> Self {
+        self.single_axis = Some(single_axis);
+        self
+    }
+
+    pub fn parallel_axis(mut self, parallel_axis: ParallelAxis) -> Self {
+        self.parallel_axis.push(parallel_axis);
+        self
+    }
+
+    pub fn axis_pointer(mut self, axis_pointer: AxisPointer) -> Self {
+        self.axis_pointer.push(axis_pointer);
+        self
+    }
+
+    pub fn visual_map(mut self, visual_map: VisualMap) -> Self {
+        self.visual_map.push(visual_map);
+        self
+    }
+
+    pub fn data_zoom(mut self, data_zoom: DataZoom) -> Self {
+        self.data_zoom.push(data_zoom);
+        self
+    }
+
+    pub fn parallel(mut self, parallel: ParallelCoordinate) -> Self {
+        self.parallel = Some(parallel);
+        self
+    }
+
+    pub fn dataset(mut self, dataset: Dataset) -> Self {
+        self.dataset = Some(dataset);
+        self
+    }
+
+    pub fn radar(mut self, radar: RadarCoordinate) -> Self {
+        self.radar.push(radar);
+        self
+    }
+
+    pub fn color(mut self, color: Vec<Color>) -> Self {
+        self.color = color;
+        self
+    }
+
+    pub fn background_color<C: Into<Color>>(mut self, color: C) -> Self {
+        self.background_color = Some(color.into());
+        self
+    }
+
+    pub fn mark_line(mut self, mark_line: MarkLine) -> Self {
+        self.mark_line = Some(mark_line);
+        self
+    }
+
+    pub fn aria(mut self, aria: Aria) -> Self {
+        self.aria = Some(aria);
+        self
+    }
+
+    pub fn series<S: Into<Series>>(mut self, series: S) -> Self {
+        self.series.push(series.into());
+        self
+    }
+
+    pub fn geo_map<M: Into<GeoMap>>(mut self, map: M) -> Self {
+        self.geo_maps.push(map.into());
+        self
+    }
+
     pub fn save_as_image_type(&self) -> Option<&SaveAsImageType> {
         self.toolbox
             .as_ref()
@@ -302,6 +524,14 @@ impl Chart {
 }
 
 impl Chart {
+    pub fn get_color_ref(&self) -> &Vec<Color> {
+        &self.color
+    }
+
+    pub fn get_color_mut(&mut self) -> &mut Vec<Color> {
+        &mut self.color
+    }
+
     pub fn get_all_ids(&self) -> Vec<String> {
         self.series
             .iter()
@@ -309,6 +539,9 @@ impl Chart {
             .collect()
     }
 
+    // !!! Could this just match on series and return the underlying series type?
+    // getters and setters would only need to be implemented on the underlying type
+    // and the need for wrapper methods would be avoided.
     pub fn get_series_mut(&mut self, id: &String) -> Option<&mut Series> {
         if let Some(index) = self
             .series
@@ -319,6 +552,72 @@ impl Chart {
         } else {
             None
         }
+    }
+
+    pub fn get_all_series_ref(&self) -> &Vec<Series> {
+        &self.series
+    }
+
+    pub fn get_all_series_mut(&mut self) -> &mut Vec<Series> {
+        &mut self.series
+    }
+
+    pub fn reset_x_axis(&mut self) {
+        self.x_axis = vec![]
+    }
+
+    pub fn reset_y_axis(&mut self) {
+        self.y_axis = vec![]
+    }
+}
+
+impl Chart {
+    pub fn with_mutable<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(&mut ChartController),
+    {
+        let mut controller = ChartController { chart: self };
+        f(&mut controller);
+        self
+    }
+}
+
+pub struct ChartController<'a> {
+    chart: &'a mut Chart,
+}
+
+impl<'a> ChartController<'a> {
+    pub fn reset_x_axis(&mut self) -> &mut Self {
+        self.chart.x_axis = vec![];
+        self
+    }
+    pub fn with_x_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.x_axis.push(axis);
+        self
+    }
+    pub fn reset_y_axis(&mut self) -> &mut Self {
+        self.chart.y_axis = vec![];
+        self
+    }
+    pub fn with_y_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.y_axis.push(axis);
+        self
+    }
+    pub fn reset_series(&mut self) -> &mut Self {
+        self.chart.series = vec![];
+        self
+    }
+    pub fn with_series<S: Into<Series>>(&mut self, series: S) -> &mut Self {
+        self.chart.series.push(series.into());
+        self
+    }
+    pub fn series_mut_by_index(&mut self, index: usize) -> SeriesController<'_> {
+        let series = self
+            .chart
+            .series
+            .get_mut(index)
+            .expect("Index out of bounds for series vector.");
+        SeriesController::new(series)
     }
 }
 
@@ -350,4 +649,46 @@ impl std::fmt::Display for EchartsError {
             Self::WasmError(msg) => write!(f, "WebAssembly runtime error: {msg}"),
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    // use claims::{assert_ok, assert_ok_eq};
+    use component::Legend;
+    use series::line::Line;
+    // use serde_assert::{Deserializer, Serializer, Token};
+
+    #[test]
+    fn test_chart_round_trip() {
+        // let chart = Chart::new().legend(Legend::new().show(true));
+        let chart = Chart::new()
+            .legend(Legend::new().show(true))
+            .series(Series::Line(Line::new().data(vec![vec![0, 1], vec![2, 3]])));
+        println!("Chart:\n {}", chart);
+        let chart_json = serde_json::to_string(&chart).unwrap();
+        println!("{}", chart_json);
+        let chart_de = serde_json::from_str(&chart_json).unwrap();
+        assert_eq!(chart, chart_de);
+    }
+    // #[test]
+    // fn test_chart_serialization() {
+    //     let value = Chart::new().legend(Legend::new().show(true));
+    //     let serializer = Serializer::builder().build();
+    //     let tokens = assert_ok!(value.serialize(&serializer));
+    //     assert_eq!(
+    //         tokens,
+    //         [
+    //             Token::Struct {
+    //                 name: "Chart",
+    //                 len: 1
+    //             },
+    //             Token::Struct {
+    //                 name: "Legend",
+    //                 len: 1
+    //             },
+    //             Token::StructEnd,
+    //         ]
+    //     );
+    // }
 }

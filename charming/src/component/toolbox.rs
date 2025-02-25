@@ -16,6 +16,7 @@ pub enum SaveAsImageType {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct SaveAsImage {
     show: Option<bool>,
     #[serde(rename = "type")]
@@ -30,6 +31,7 @@ pub struct SaveAsImage {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Restore {
     show: Option<bool>,
     title: Option<String>,
@@ -41,6 +43,7 @@ pub struct Restore {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DataView {
     show: Option<bool>,
     title: Option<String>,
@@ -75,6 +78,7 @@ impl From<&str> for MagicTypeType {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct MagicType {
     type_: Option<Vec<MagicTypeType>>,
     title: Option<String>,
@@ -97,6 +101,7 @@ pub enum BrushType {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Brush {
     #[serde(rename = "type")]
     #[charming_set_vec]
@@ -109,6 +114,7 @@ pub struct Brush {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ToolboxDataZoom {
     y_axis_index: Option<CompositeValue>,
 }
@@ -119,6 +125,7 @@ pub struct ToolboxDataZoom {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Feature {
     save_as_image: Option<SaveAsImage>,
     restore: Option<Restore>,
@@ -134,6 +141,7 @@ pub struct Feature {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Toolbox {
     show: Option<bool>,
     feature: Option<Feature>,

@@ -25,6 +25,7 @@ serde_v8 = { version = "0.260", optional = true }
 serde_with = "3.11.0"
 wasm-bindgen = { version = "0.2", optional = true }
 js-sys = { version = "0.3", optional = true }
+thiserror = "2.0.12"
 
 [dev-dependencies]
 assert-json-diff = "2.0.2"

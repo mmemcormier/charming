@@ -11,6 +11,7 @@ use serde::{Deserialize, Serialize};
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct GridTooltip {
     /// Whether to show the tooltip component.
     show: Option<bool>,
@@ -51,6 +52,7 @@ impl GridTooltip {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Grid {
     /// Component ID.
     id: Option<String>,

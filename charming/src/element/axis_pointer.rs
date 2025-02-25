@@ -29,6 +29,7 @@ pub enum AxisPointerAxis {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointerLink {
     x_axis_index: Option<CompositeValue>,
     x_axis_name: Option<String>,
@@ -44,6 +45,7 @@ pub struct AxisPointerLink {
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointer {
     /// Component ID.
     id: Option<String>,

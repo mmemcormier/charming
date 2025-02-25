@@ -31,6 +31,7 @@ impl From<&str> for MarkLineDataType {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct MarkLineData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
@@ -141,6 +142,7 @@ pub enum MarkLineVariant {
     StartToEnd(MarkLineData, MarkLineData),
 }
 
+//WARN: deserialization is probably not correct. Need unit tests.
 impl Serialize for MarkLineVariant {
     fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
         match self {
@@ -213,6 +215,7 @@ impl<'de> Deserialize<'de> for MarkLineVariant {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Clone, Default)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct MarkLine {
     #[serde(skip_serializing_if = "Option::is_none")]
     label: Option<Label>,
