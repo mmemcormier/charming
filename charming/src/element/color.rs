@@ -1,7 +1,7 @@
 use serde::ser::{SerializeStruct, Serializer};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum ColorBy {
     Series,
@@ -78,6 +78,7 @@ impl<'de> Deserialize<'de> for Color {
             {
                 Ok(Color::Value(v.into()))
             }
+            // WARN: deserialization not implemented for LinearGradient and RadialGradient
         }
 
         deserializer.deserialize_any(ColorVisitor)

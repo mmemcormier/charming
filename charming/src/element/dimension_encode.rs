@@ -1,9 +1,9 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::datatype::CompositeValue;
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct DimensionEncode {
     #[serde(skip_serializing_if = "Option::is_none")]
     x: Option<CompositeValue>,

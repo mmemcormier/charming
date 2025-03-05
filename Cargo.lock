@@ -351,6 +351,7 @@ name = "charming"
 version = "0.4.0"
 dependencies = [
  "assert-json-diff",
+ "claims",
  "deno_core",
  "handlebars",
  "image",
@@ -358,6 +359,7 @@ dependencies = [
  "resvg",
  "serde",
  "serde-wasm-bindgen",
+ "serde_assert",
  "serde_json",
  "serde_v8",
  "serde_with",
@@ -395,6 +397,12 @@ dependencies = [
  "wasm-bindgen",
  "windows-targets 0.52.0",
 ]
+
+[[package]]
+name = "claims"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bba18ee93d577a8428902687bcc2b6b45a56b1981a1f6d779731c86cc4c5db18"
 
 [[package]]
 name = "clang-sys"
@@ -1853,6 +1861,15 @@ dependencies = [
  "js-sys",
  "serde",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "serde_assert"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f7341bab0ba89c85756d5d032a66b009ed88833ea915f5997b9e8303f0c52a54"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

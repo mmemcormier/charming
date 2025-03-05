@@ -1,6 +1,6 @@
 use std::vec;
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::{CompositeValue, DataFrame, DataPoint},
@@ -9,7 +9,7 @@ use crate::{
     },
 };
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct Bar {
     #[serde(rename = "type")]

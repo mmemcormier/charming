@@ -1,11 +1,11 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::CompositeValue,
     element::{Label, LineStyle},
 };
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum AxisPointerType {
     Line,
@@ -14,7 +14,7 @@ pub enum AxisPointerType {
     None,
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[derive(Deserialize, Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum AxisPointerAxis {
     X,
@@ -23,8 +23,9 @@ pub enum AxisPointerAxis {
     Angle,
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointerLink {
     #[serde(skip_serializing_if = "Option::is_none")]
     x_axis_index: Option<CompositeValue>,
@@ -78,8 +79,9 @@ impl AxisPointerLink {
 
 /// Axis Pointer is a tool for displaying reference line and axis value under
 /// mouse pointer.
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct AxisPointer {
     /// Component ID.
     #[serde(skip_serializing_if = "Option::is_none")]

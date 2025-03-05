@@ -1,9 +1,9 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::{item_style::ItemStyle, label::Label};
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Blur {
     #[serde(skip_serializing_if = "Option::is_none")]
     label: Option<Label>,

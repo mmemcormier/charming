@@ -1,7 +1,7 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
-#[serde(rename_all = "snake_case")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[serde(rename_all(serialize = "snake_case", deserialize = "PascalCase"))]
 pub enum MarkPointDataType {
     Min,
     Max,
@@ -19,8 +19,8 @@ impl From<&str> for MarkPointDataType {
     }
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct MarkPointData {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
@@ -88,8 +88,8 @@ impl From<(&str, &str)> for MarkPointData {
     }
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct MarkPoint {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     data: Vec<MarkPointData>,

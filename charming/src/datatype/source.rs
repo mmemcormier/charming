@@ -1,8 +1,8 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::CompositeValue;
 
-#[derive(Debug, Clone, PartialEq, PartialOrd, Serialize)]
+#[derive(Deserialize, Debug, Clone, PartialEq, PartialOrd, Serialize)]
 #[serde(untagged)]
 pub enum DataSource {
     Integers(Vec<Vec<i64>>),

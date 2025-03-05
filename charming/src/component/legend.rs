@@ -1,6 +1,8 @@
+use core::fmt;
 use std::collections::HashMap;
 
-use serde::Serialize;
+use serde::de::{Error, Visitor};
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::CompositeValue,
@@ -26,7 +28,46 @@ impl From<Vec<Legend>> for LegendConfig {
     }
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+impl<'de> Deserialize<'de> for LegendConfig {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        struct LegendConfigVisitor;
+
+        impl<'de> Visitor<'de> for LegendConfigVisitor {
+            type Value = LegendConfig;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                formatter.write_str("a single Legend or an array of Legends")
+            }
+
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: serde::de::SeqAccess<'de>,
+            {
+                let mut legends = Vec::new();
+                while let Some(legend) = seq.next_element()? {
+                    legends.push(legend);
+                }
+                Ok(LegendConfig::Multiple(legends))
+            }
+
+            fn visit_map<M>(self, map: M) -> Result<Self::Value, M::Error>
+            where
+                M: serde::de::MapAccess<'de>,
+            {
+                let legend: Legend =
+                    Deserialize::deserialize(serde::de::value::MapAccessDeserializer::new(map))?;
+                Ok(LegendConfig::Single(Box::new(legend)))
+            }
+        }
+
+        deserializer.deserialize_any(LegendConfigVisitor)
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum LegendType {
     /// Simple legend.
@@ -36,7 +77,7 @@ pub enum LegendType {
     Scroll,
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "snake_case")]
 pub enum LegendSelectedMode {
     /// Multiple selection.
@@ -46,7 +87,7 @@ pub enum LegendSelectedMode {
     Single,
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct LegendItem {
     pub name: String,
@@ -88,8 +129,9 @@ impl From<(String, String)> for LegendItem {
     }
 }
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Legend {
     /// Type of legend.
     #[serde(skip_serializing_if = "Option::is_none")]

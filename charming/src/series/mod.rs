@@ -1,7 +1,7 @@
 #![allow(clippy::large_enum_variant)]
 
-use crate::element::{smoothness::Smoothness, LineStyle};
-use serde::Serialize;
+use crate::element::{smoothness::Smoothness, LineStyle, Symbol};
+use serde::{Deserialize, Serialize};
 
 pub mod bar;
 pub mod bar3d;
@@ -86,6 +86,7 @@ pub trait Getters {
     fn get_series_name(&self) -> Option<String>;
     fn get_show_symbol(&self) -> Option<bool>;
     fn get_series_smoothness(&self) -> Option<Smoothness>;
+    fn get_series_symbol(&self) -> &Option<Symbol>;
     fn get_series_linestyle(&self) -> Option<LineStyle>;
     fn get_series_data(&self) -> Option<&Vec<DataPoint>>;
 }
@@ -93,6 +94,7 @@ pub trait Getters {
 pub trait Setters {
     fn set_show_symbol(&mut self, show_symbol: bool);
     fn set_smoothness<S: Into<Smoothness>>(&mut self, smoothness: S);
+    fn set_symbol<S: Into<Symbol>>(&mut self, symbol: S);
     fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L);
     fn set_series_data<D: Into<DataPoint>>(&mut self, new_data: Vec<D>);
 }
@@ -127,6 +129,13 @@ impl Getters for Series {
         }
     }
 
+    fn get_series_symbol(&self) -> &Option<Symbol> {
+        match self {
+            Series::Line(line) => line.get_symbol(),
+            _ => &None,
+        }
+    }
+
     fn get_series_linestyle(&self) -> Option<LineStyle> {
         match self {
             Series::Line(line) => line.get_linestyle(),
@@ -155,6 +164,12 @@ impl Setters for Series {
             _ => (),
         }
     }
+    fn set_symbol<S: Into<Symbol>>(&mut self, symbol: S) {
+        match self {
+            Series::Line(line) => line.set_symbol(symbol),
+            _ => (),
+        }
+    }
     fn set_linestyle<L: Into<LineStyle>>(&mut self, line_style: L) {
         match self {
             Series::Line(line) => line.set_linestyle(line_style),
@@ -166,6 +181,30 @@ impl Setters for Series {
             Series::Line(line) => line.set_show_symbol(show_symbol),
             _ => (),
         }
+    }
+}
+
+impl<'de> Deserialize<'de> for Series {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        // Deserialize into a struct that contains the "type" field
+        let value = serde_json::Value::deserialize(deserializer)?;
+
+        let result = match value.get("type").and_then(serde_json::Value::as_str) {
+            Some(type_) => match type_ {
+                "bar" => serde_json::from_value(value).map(Series::Bar),
+                "line" => serde_json::from_value(value).map(Series::Line),
+                // TODO: add remaining series types.
+                unknown => Err(serde::de::Error::custom(format!(
+                    "unknown series type: {}",
+                    unknown
+                ))),
+            },
+            None => Err(serde::de::Error::custom("missing series type")),
+        };
+        Ok(result.map_err(serde::de::Error::custom)?)
     }
 }
 
@@ -215,3 +254,22 @@ impl_series!(
     Tree,
     Treemap
 );
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn round_trip_series_line() {
+        let data = vec![vec![0, 1], vec![2, 3]];
+        let line = line::Line::new()
+            .name("test_line")
+            .show_symbol(false)
+            .connect_nulls(true)
+            .data(data);
+        let line_json = serde_json::to_string(&line).unwrap();
+        println!("{}", line_json);
+        let line_de = serde_json::from_str(&line_json).unwrap();
+        assert_eq!(line, line_de);
+    }
+}

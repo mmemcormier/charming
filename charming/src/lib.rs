@@ -100,7 +100,7 @@ use component::{
 };
 use datatype::Dataset;
 use element::{process_raw_strings, AxisPointer, Color, MarkLine, Tooltip};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_with::{formats::PreferOne, serde_as, OneOrMany};
 use series::Series;
 /**
@@ -238,8 +238,9 @@ mouse pointer.
 zoom, restore, and reset.
  */
 #[serde_as]
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Chart {
     #[serde(skip_serializing_if = "Vec::is_empty")]
     title: Vec<Title>,
@@ -314,6 +315,7 @@ pub struct Chart {
     dataset: Option<Dataset>,
 
     #[serde(skip_serializing_if = "Vec::is_empty")]
+    // #[serde(default)]
     radar: Vec<RadarCoordinate>,
 
     #[serde(skip_serializing_if = "Vec::is_empty")]
@@ -544,6 +546,9 @@ impl Chart {
             .collect()
     }
 
+    // !!! Could this just match on series and return the underlying series type?
+    // getters and setters would only need to be implemented on the underlying type
+    // and the need for wrapper methods would be avoided.
     pub fn get_series_mut(&mut self, id: &String) -> Option<&mut Series> {
         if let Some(index) = self
             .series
@@ -560,10 +565,25 @@ impl Chart {
         &self.series
     }
 
-    pub fn add_series<S: Into<Series>>(&mut self, series: S) {
-        self.series.push(series.into());
+    pub fn get_all_series_mut(&mut self) -> &mut Vec<Series> {
+        &mut self.series
+    }
+
+    pub fn reset_x_axis(&mut self) {
+        self.x_axis = vec![]
+    }
+
+    pub fn reset_y_axis(&mut self) {
+        self.y_axis = vec![]
     }
 }
+
+// impl Chart {
+//     fn with_mutable<T>(&mut self, f: impl FnOnce(&mut T)) -> &mut Self {
+//         f(&mut T);
+//         self
+//     }
+// }
 
 impl std::fmt::Display for Chart {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -593,4 +613,46 @@ impl std::fmt::Display for EchartsError {
             Self::WasmError(msg) => write!(f, "WebAssembly runtime error: {}", msg),
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    // use claims::{assert_ok, assert_ok_eq};
+    use component::Legend;
+    use series::line::Line;
+    // use serde_assert::{Deserializer, Serializer, Token};
+
+    #[test]
+    fn test_chart_round_trip() {
+        // let chart = Chart::new().legend(Legend::new().show(true));
+        let chart = Chart::new()
+            .legend(Legend::new().show(true))
+            .series(Series::Line(Line::new().data(vec![vec![0, 1], vec![2, 3]])));
+        println!("Chart:\n {}", chart);
+        let chart_json = serde_json::to_string(&chart).unwrap();
+        println!("{}", chart_json);
+        let chart_de = serde_json::from_str(&chart_json).unwrap();
+        assert_eq!(chart, chart_de);
+    }
+    // #[test]
+    // fn test_chart_serialization() {
+    //     let value = Chart::new().legend(Legend::new().show(true));
+    //     let serializer = Serializer::builder().build();
+    //     let tokens = assert_ok!(value.serialize(&serializer));
+    //     assert_eq!(
+    //         tokens,
+    //         [
+    //             Token::Struct {
+    //                 name: "Chart",
+    //                 len: 1
+    //             },
+    //             Token::Struct {
+    //                 name: "Legend",
+    //                 len: 1
+    //             },
+    //             Token::StructEnd,
+    //         ]
+    //     );
+    // }
 }

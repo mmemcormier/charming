@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::CompositeValue,
@@ -8,8 +8,9 @@ use crate::{
 /**
 A single decal pattern.
  */
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct DecalItem {
     /// The symbol type of the decal.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -132,8 +133,9 @@ impl DecalItem {
 /**
 Decal patterns to be applied to series data.
  */
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Decal {
     /// Whether to show decal patterns. If `decals` is not set, this option is
     /// used to enable the default decal pattern.
@@ -202,8 +204,9 @@ Chart::new()
     .series(Bar::new().data(vec![140, 230, 120, 50, 30, 150, 120]));
 ```
  */
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Aria {
     /// Whether to enable WAI-ARIA.
     #[serde(skip_serializing_if = "Option::is_none")]

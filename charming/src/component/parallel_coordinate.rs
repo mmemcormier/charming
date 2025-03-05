@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::CompositeValue,
@@ -8,8 +8,9 @@ use crate::{
     },
 };
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ParallelAxisDefault {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
@@ -233,8 +234,9 @@ impl ParallelAxisDefault {
     }
 }
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct ParallelCoordinate {
     #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,

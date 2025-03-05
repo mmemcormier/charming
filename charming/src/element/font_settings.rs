@@ -1,6 +1,6 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
 #[serde(rename_all = "camelCase")]
 pub enum FontStyle {
     Normal,
@@ -8,7 +8,7 @@ pub enum FontStyle {
     Oblique,
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub enum FontWeight {
     Normal,
     Bold,
@@ -49,7 +49,7 @@ impl Serialize for FontWeight {
     }
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub enum FontFamily {
     Serif,
     SansSerif,

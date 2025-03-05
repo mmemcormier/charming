@@ -1,7 +1,7 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
-#[serde(rename_all = "snake_case")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[serde(rename_all(serialize = "snake_case", deserialize = "PascalCase"))]
 pub enum Orient {
     Horizontal,
     Vertical,

@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::datatype::CompositeValue;
 
@@ -8,7 +8,7 @@ use super::{
     Formatter,
 };
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct AxisLabel {
     #[serde(skip_serializing_if = "Option::is_none")]

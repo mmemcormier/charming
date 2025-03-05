@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::CompositeValue,
@@ -6,8 +6,9 @@ use crate::{
 };
 
 /// Title component, including main title and subtitle.
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
+#[serde(default)]
 pub struct Title {
     /// Component ID.
     #[serde(skip_serializing_if = "Option::is_none")]

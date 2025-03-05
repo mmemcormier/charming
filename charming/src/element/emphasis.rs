@@ -1,9 +1,9 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::{item_style::ItemStyle, AreaStyle, Label};
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
-#[serde(rename_all = "snake_case")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[serde(rename_all(serialize = "snake_case", deserialize = "PascalCase"))]
 pub enum EmphasisFocus {
     None,
     #[serde(rename = "self")]
@@ -15,8 +15,8 @@ pub enum EmphasisFocus {
     Adjacency,
 }
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct Emphasis {
     #[serde(skip_serializing_if = "Option::is_none")]
     focus: Option<EmphasisFocus>,

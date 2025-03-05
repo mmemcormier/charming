@@ -1,4 +1,4 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::{
     datatype::{DataFrame, DataPoint},
@@ -8,7 +8,8 @@ use crate::{
     },
 };
 
-#[derive(Serialize, Debug, PartialEq, Clone)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Clone)]
+// #[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 #[serde(rename_all = "camelCase")]
 pub struct Line {
     #[serde(rename = "type")]
@@ -275,6 +276,14 @@ impl Line {
     }
     pub fn set_name<S: Into<String>>(&mut self, name: S) {
         self.name = Some(name.into())
+    }
+
+    pub fn get_symbol(&self) -> &Option<Symbol> {
+        &self.symbol
+    }
+
+    pub fn set_symbol<S: Into<Symbol>>(&mut self, symbol: S) {
+        self.symbol = Some(symbol.into())
     }
 
     pub fn get_show_symbol(&self) -> Option<bool> {

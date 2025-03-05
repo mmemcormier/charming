@@ -1,17 +1,17 @@
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use super::color::Color;
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
-#[serde(rename_all = "snake_case")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone, Copy)]
+#[serde(rename_all(serialize = "snake_case", deserialize = "PascalCase"))]
 pub enum OriginPosition {
     Auto,
     Start,
     End,
 }
 
-#[derive(Serialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(rename_all = "camelCase")]
+#[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[serde(rename_all(serialize = "camelCase", deserialize = "snake_case"))]
 pub struct AreaStyle {
     #[serde(skip_serializing_if = "Option::is_none")]
     color: Option<Color>,
