@@ -578,12 +578,53 @@ impl Chart {
     }
 }
 
-// impl Chart {
-//     fn with_mutable<T>(&mut self, f: impl FnOnce(&mut T)) -> &mut Self {
-//         f(&mut T);
-//         self
-//     }
-// }
+impl Chart {
+    pub fn with_mutable<F>(&mut self, f: F) -> &mut Self
+    where
+        F: FnOnce(&mut ChartController),
+    {
+        let mut controller = ChartController { chart: self };
+        f(&mut controller);
+        self
+    }
+}
+// implement for chart instead.
+impl<'a> AsMut<ChartController<'a>> for ChartController<'a> {
+    fn as_mut(&mut self) -> &mut Self {
+        self
+    }
+}
+
+pub struct ChartController<'a> {
+    chart: &'a mut Chart,
+}
+
+impl<'a> ChartController<'a> {
+    pub fn reset_x_axis(&mut self) -> &mut Self {
+        self.chart.x_axis = vec![];
+        self
+    }
+    pub fn with_x_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.x_axis.push(axis);
+        self
+    }
+    pub fn reset_y_axis(&mut self) -> &mut Self {
+        self.chart.y_axis = vec![];
+        self
+    }
+    pub fn with_y_axis(&mut self, axis: Axis) -> &mut Self {
+        self.chart.y_axis.push(axis);
+        self
+    }
+    pub fn reset_series(&mut self) -> &mut Self {
+        self.chart.series = vec![];
+        self
+    }
+    pub fn with_series<S: Into<Series>>(&mut self, series: S) -> &mut Self {
+        self.chart.series.push(series.into());
+        self
+    }
+}
 
 impl std::fmt::Display for Chart {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
