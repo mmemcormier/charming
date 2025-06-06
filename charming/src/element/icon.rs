@@ -1,7 +1,6 @@
 use serde::{Deserialize, Deserializer, Serialize};
 
-#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(rename_all(serialize = "snake_case", deserialize = "PascalCase"))]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum Icon {
     Circle,
     Rect,

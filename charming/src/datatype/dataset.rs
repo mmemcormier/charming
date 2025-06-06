@@ -68,7 +68,6 @@ where
 )]
 #[derive(Serialize, Deserialize, CharmingSetters, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
-#[serde(default)]
 pub struct Transform {
     id: Option<String>,
     transform: Option<RawString>,
@@ -83,8 +82,7 @@ impl From<&str> for Transform {
     }
 }
 
-#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(default)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub struct Dataset {
     sources: Vec<Source>,
     transforms: Vec<Transform>,
