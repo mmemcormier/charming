@@ -9,7 +9,7 @@ pub enum FontStyle {
     Oblique,
 }
 
-#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub enum FontWeight {
     Normal,
     Bold,

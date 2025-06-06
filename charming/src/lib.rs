@@ -399,7 +399,6 @@ impl Chart {
             toolbox: None,
             legend: None,
             tooltip: None,
-            animation: None,
             grid: vec![],
             grid3d: vec![],
             x_axis: vec![],
@@ -484,11 +483,6 @@ impl Chart {
 
     pub fn toolbox(mut self, toolbox: Toolbox) -> Self {
         self.toolbox = Some(toolbox);
-        self
-    }
-
-    pub fn animation(mut self, animation: bool) -> Self {
-        self.animation = Some(animation);
         self
     }
 

@@ -4,8 +4,6 @@ use crate::element::RawString;
 
 use super::{DataSource, Dimension};
 
-// WARN: no default impl for DataSource. If this is partially initialized it
-// will not deserialize correctly.
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 pub struct Source {
     source: DataSource,
@@ -67,7 +65,6 @@ where
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, PartialOrd, Clone)]
 #[serde(rename_all = "camelCase")]
-#[serde(default)]
 pub struct Transform {
     #[serde(skip_serializing_if = "Option::is_none")]
     id: Option<String>,
@@ -134,8 +131,7 @@ impl From<&str> for Transform {
     }
 }
 
-#[derive(Deserialize, Debug, PartialEq, PartialOrd, Clone)]
-#[serde(default)]
+#[derive(Debug, PartialEq, PartialOrd, Clone)]
 pub struct Dataset {
     sources: Vec<Source>,
     transforms: Vec<Transform>,

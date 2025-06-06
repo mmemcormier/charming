@@ -1,7 +1,7 @@
 #![allow(clippy::large_enum_variant)]
 
 use crate::element::{smoothness::Smoothness, LineStyle, Symbol};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use thiserror;
 
 pub mod bar;
@@ -299,30 +299,6 @@ impl Setters for Series {
             Series::Line(line) => line.set_show_symbol(show_symbol),
             _ => (),
         }
-    }
-}
-
-impl<'de> Deserialize<'de> for Series {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        // Deserialize into a struct that contains the "type" field
-        let value = serde_json::Value::deserialize(deserializer)?;
-
-        let result = match value.get("type").and_then(serde_json::Value::as_str) {
-            Some(type_) => match type_ {
-                "bar" => serde_json::from_value(value).map(Series::Bar),
-                "line" => serde_json::from_value(value).map(Series::Line),
-                // TODO: add remaining series types.
-                unknown => Err(serde::de::Error::custom(format!(
-                    "unknown series type: {}",
-                    unknown
-                ))),
-            },
-            None => Err(serde::de::Error::custom("missing series type")),
-        };
-        Ok(result.map_err(serde::de::Error::custom)?)
     }
 }
 
