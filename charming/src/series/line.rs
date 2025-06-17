@@ -242,8 +242,118 @@ impl<'a> LineController<'a> {
         self
     }
 
+    pub fn with_area_style<A: Into<AreaStyle>>(&mut self, style: A) -> &mut Self {
+        self.line.area_style = Some(style.into());
+        self
+    }
+
+    pub fn with_connect_nulls(&mut self, connect: bool) -> &mut Self {
+        self.line.connect_nulls = Some(connect);
+        self
+    }
+
+    pub fn with_coordinate_system<C: Into<CoordinateSystem>>(&mut self, system: C) -> &mut Self {
+        self.line.coordinate_system = Some(system.into());
+        self
+    }
+
+    pub fn with_data<D: Into<DataPoint>>(&mut self, data: Vec<D>) -> &mut Self {
+        self.line.data = data.into_iter().map(|d| d.into()).collect();
+        self
+    }
+
+    pub fn with_dataset_id<S: Into<String>>(&mut self, id: S) -> &mut Self {
+        self.line.dataset_id = Some(id.into());
+        self
+    }
+
+    pub fn with_emphasis<E: Into<Emphasis>>(&mut self, emphasis: E) -> &mut Self {
+        self.line.emphasis = Some(emphasis.into());
+        self
+    }
+
+    pub fn with_encode<E: Into<DimensionEncode>>(&mut self, encode: E) -> &mut Self {
+        self.line.encode = Some(encode.into());
+        self
+    }
+
+    pub fn with_item_style<I: Into<ItemStyle>>(&mut self, style: I) -> &mut Self {
+        self.line.item_style = Some(style.into());
+        self
+    }
+
+    pub fn with_label<L: Into<Label>>(&mut self, label: L) -> &mut Self {
+        self.line.label = Some(label.into());
+        self
+    }
+
+    pub fn with_line_style<L: Into<LineStyle>>(&mut self, style: L) -> &mut Self {
+        self.line.line_style = Some(style.into());
+        self
+    }
+
+    pub fn with_mark_area<M: Into<MarkArea>>(&mut self, area: M) -> &mut Self {
+        self.line.mark_area = Some(area.into());
+        self
+    }
+
+    pub fn with_mark_line<M: Into<MarkLine>>(&mut self, line: M) -> &mut Self {
+        self.line.mark_line = Some(line.into());
+        self
+    }
+
+    pub fn with_mark_point<M: Into<MarkPoint>>(&mut self, point: M) -> &mut Self {
+        self.line.mark_point = Some(point.into());
+        self
+    }
+
+    pub fn with_sampling(&mut self, sampling: Sampling) -> &mut Self {
+        self.line.sampling = Some(sampling);
+        self
+    }
+
+    pub fn with_silent(&mut self, silent: bool) -> &mut Self {
+        self.line.silent = Some(silent);
+        self
+    }
+
     pub fn with_smooth<S: Into<Smoothness>>(&mut self, smooth: S) -> &mut Self {
         self.line.smooth = Some(smooth.into());
+        self
+    }
+
+    pub fn with_stack<S: Into<String>>(&mut self, stack: S) -> &mut Self {
+        self.line.stack = Some(stack.into());
+        self
+    }
+
+    pub fn with_step<S: Into<Step>>(&mut self, step: S) -> &mut Self {
+        self.line.step = Some(step.into());
+        self
+    }
+
+    pub fn with_symbol_size<S: Into<SymbolSize>>(&mut self, size: S) -> &mut Self {
+        self.line.symbol_size = Some(size.into());
+        self
+    }
+
+    pub fn with_tooltip(&mut self, tooltip: Tooltip) -> &mut Self {
+        self.line.tooltip = Some(tooltip);
+        self
+    }
+
+    pub fn with_x_axis_index<F: Into<f64>>(&mut self, index: F) -> &mut Self {
+        self.line.x_axis_index = Some(index.into());
+        self
+    }
+
+    pub fn with_y_axis_index<F: Into<f64>>(&mut self, index: F) -> &mut Self {
+        self.line.y_axis_index = Some(index.into());
+        self
+    }
+
+    pub fn with_z<I: Into<i32>>(&mut self, z: I) -> &mut Self {
+        self.line.z = Some(z.into());
         self
     }
 }
